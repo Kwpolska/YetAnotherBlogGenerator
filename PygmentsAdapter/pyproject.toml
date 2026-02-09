@@ -1,0 +1,20 @@
+[build-system]
+requires = ["flit_core >=3.11,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "yabg_pygments_adapter"
+authors = [{name = "Chris Warrick"}]
+readme = "README.md"
+license = "BSD-3-Clause"
+dynamic = ["version", "description"]
+dependencies = [
+    "Pygments>=2.17.2",
+    "pygments-better-html>=0.1.5",
+]
+
+[project.urls]
+Source = "https://github.com/Kwpolska/YetAnotherBlogGenerator/tree/main/PygmentsAdapter"
+
+[project.scripts]
+yabg_pygments_adapter = "yabg_pygments_adapter.__main__:main"

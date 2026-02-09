@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/Tools/">
+    <Project Path="NikolaPostConverter/NikolaPostConverter.csproj" />
+  </Folder>
+  <Project Path="YetAnotherBlogGenerator/YetAnotherBlogGenerator.csproj" />
+</Solution>
