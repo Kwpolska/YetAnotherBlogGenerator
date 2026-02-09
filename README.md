@@ -2,7 +2,7 @@
 
 This is an unoriginally-named static site generator, written in C#.
 
-Its main purpose is to generate my blog at <https://chriswarrick.com/>. The source of that website is available at GitHub: <https://github.com/Kwpolska/website>.
+Its main purpose is to generate my blog at <https://chriswarrick.com/>. The source of that website is available at GitHub: <https://github.com/Kwpolska/chriswarrick.com>.
 
 The engine was designed with generating this site in mind, so it probably won’t work for your site.
 
