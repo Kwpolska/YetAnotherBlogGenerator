@@ -45,6 +45,8 @@ dotnet run --project C:\git\YetAnotherBlogGenerator\YetAnotherBlogGenerator\YetA
 
 (You might also want to run `dotnet publish` and add an alias to the executable, or symlink it into `$PATH` on Linux.)
 
+If you’re on Linux, you might need to install fontconfig. `apt install libfontconfig1` will do it on Debian, `dnf install fontconfig` will do it on Fedora.
+
 ## Roadmap
 
 The main goal of this project was parity with Nikola to render my blog. That goal was reached before the code was published. I do not intend to make this any big project, so I probably will not write tests or documentation. That said, feedback and contributions are always welcome.
