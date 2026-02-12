@@ -36,7 +36,7 @@ internal class MainEngine(
 
   public async Task Run() {
     await Task.Yield();
-    logger.LogInformation(Constants.CoreLog, "Welcome to YABG");
+    logger.LogInformation(Constants.CoreLog, "Starting build");
     try {
       await RunCore().ConfigureAwait(false);
       cacheService.Set(Constants.CoreCacheSource, nameof(LastRenderStatus),
@@ -124,7 +124,7 @@ internal class MainEngine(
     await outputEngine.Execute(sitemapTask).ConfigureAwait(false);
     FinishAction("Rendered", 1, "sitemap");
 
-    logger.LogInformation(Constants.CoreLog, "YABG finished in {Time} seconds", topStopwatch.Elapsed.TotalSeconds);
+    logger.LogInformation(Constants.CoreLog, "Build finished in {Time} seconds", topStopwatch.Elapsed.TotalSeconds);
   }
 
   private void StartAction(string scopeName, string introMessage) {
