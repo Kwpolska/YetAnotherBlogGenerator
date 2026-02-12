@@ -11,6 +11,7 @@ import typing
 import unicodedata
 
 from pygments.lexers import get_lexer_by_name, get_lexer_for_filename, guess_lexer
+from pygments.formatters.html import HtmlFormatter
 from pygments_better_html import BetterHtmlFormatter
 from pygments.util import ClassNotFound
 
@@ -77,13 +78,18 @@ def render(request: Request) -> Response:
             shasum = hashlib.sha1(request["source"].encode("utf-8")).hexdigest()
             lineanchors = f"code_{shasum}"
 
-        formatter = BetterHtmlFormatter(
-            lineanchors=lineanchors,
-            cssclass="code",
-            linenos="table",
-            anchorlinenos=True,
-            nowrap=False,
-        )
+        line_count = request["source"].count("\n") + 1
+
+        if line_count <= 3:
+            formatter = HtmlFormatter()
+        else:
+            formatter = BetterHtmlFormatter(
+                lineanchors=lineanchors,
+                cssclass="code",
+                linenos="table",
+                anchorlinenos=True,
+                nowrap=False,
+            )
 
         html = pygments.highlight(request["source"], lexer, formatter)
     except Exception as exc:
