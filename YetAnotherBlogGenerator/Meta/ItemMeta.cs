@@ -18,6 +18,7 @@ public record ItemMeta(
     GuideMeta? Guide,
     ProjectMeta? Project,
     bool PublishedDateInSource,
+    bool Legacy,
     Dictionary<string, object> CustomFields) {
   public DateTimeOffset UpdatedOrPublished => Updated ?? Published;
 }

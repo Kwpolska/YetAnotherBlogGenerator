@@ -72,6 +72,7 @@ internal class MetaParser : IMetaParser {
         Guide: ParseBoolean(metaReader.GetValueOrDefault(MetaFields.Guide)) == true ? ParseGuideMeta(metaReader) : null,
         Project: itemType == ItemType.Project ? ParseProjectMeta(metaReader) : null,
         PublishedDateInSource: sourceMeta.ContainsKey(MetaFields.Published),
+        Legacy: ParseBoolean(metaReader.GetValueOrDefault(MetaFields.Legacy)) ?? false,
         CustomFields: sourceMeta
     );
 
