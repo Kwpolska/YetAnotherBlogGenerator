@@ -2,6 +2,8 @@
 // Copyright © 2025-2026, Chris Warrick. All rights reserved.
 // Licensed under the 3-clause BSD license.
 
+using System.Collections.Concurrent;
+using System.Security.Cryptography;
 using Fluid;
 using Fluid.Values;
 using Fluid.ViewEngine;
@@ -19,8 +21,10 @@ internal class TemplateEngine : ITemplateEngine {
   private readonly FluidViewRenderer _renderer;
   private readonly TemplateOptions _templateOptions;
   private readonly IConfiguration _configuration;
+  private readonly IUrlHelper _urlHelper;
+  private readonly ConcurrentDictionary<string, string> _cacheBustingLinksCache = new();
 
-  public TemplateEngine(IConfiguration configuration) {
+  public TemplateEngine(IConfiguration configuration, IUrlHelper urlHelper) {
     var options = new FluidViewEngineOptions();
     options.Parser = new FluidViewParser(new FluidParserOptions() { AllowFunctions = true });
     var templateFolder = Path.Join(configuration.SourceRoot, CommonFolders.Templates);
@@ -54,9 +58,11 @@ internal class TemplateEngine : ITemplateEngine {
     options.TemplateOptions.Filters.AddFilter("categoryColor", GetCategoryColor);
     options.TemplateOptions.Filters.AddFilter("listingSourceUrl", GetListingSourceUrl);
     options.TemplateOptions.Filters.AddFilter("projectDevStatus", GetDevStatus);
+    options.TemplateOptions.Filters.AddFilter("cacheBusting", GetCacheBustingLink);
     _renderer = new FluidViewRenderer(options);
     _templateOptions = options.TemplateOptions;
     _configuration = configuration;
+    _urlHelper = urlHelper;
   }
 
   private static ValueTask<FluidValue> GetCategoryColor(FluidValue input, FilterArguments arguments,
@@ -77,6 +83,22 @@ internal class TemplateEngine : ITemplateEngine {
       7 => DevStatusBadge("danger", "Inactive"),
       _ => DevStatusBadge("default", "Unknown")
   };
+
+  private async ValueTask<FluidValue> GetCacheBustingLink(FluidValue input, FilterArguments arguments,
+      TemplateContext context) {
+    var url = input.ToStringValue();
+    if (_cacheBustingLinksCache.TryGetValue(url, out var cachedValue)) {
+      return new StringValue($"{url}?md5={cachedValue}");
+    }
+
+    var path = _urlHelper.UrlToOutputPath(url);
+    var data = await File.ReadAllBytesAsync(path).ConfigureAwait(false);
+    var hash = MD5.HashData(data);
+    var stringHash = Convert.ToHexString(hash).ToLower();
+    _cacheBustingLinksCache.TryAdd(url, stringHash);
+
+    return new StringValue($"{url}?c={stringHash}");
+  }
 
   private static ValueTask<FluidValue> DevStatusBadge(string className, string label)
     => new StringValue($"""<span class="badge rounded-pill text-bg-{className}">{label}</span>""", encode: false);

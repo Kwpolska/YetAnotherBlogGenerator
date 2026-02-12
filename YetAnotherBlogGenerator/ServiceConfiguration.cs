@@ -39,10 +39,10 @@ internal static class ServiceConfiguration {
       .AddScoped<PygmentsRenderer>()
       .AddScoped<IListingRenderer, CachingPygmentsRenderer>()
       // Item Rendering
-      .AddKeyedSingleton<IItemRenderer, GalleryItemRenderer>(GalleryItemRenderer.Name)
-      .AddKeyedSingleton<IItemRenderer, HtmlItemRenderer>(HtmlItemRenderer.Name)
-      .AddKeyedSingleton<IItemRenderer, ListingItemRenderer>(ListingItemRenderer.Name)
-      .AddKeyedSingleton<IItemRenderer, MarkdownItemRenderer>(MarkdownItemRenderer.Name)
+      .AddKeyedScoped<IItemRenderer, GalleryItemRenderer>(GalleryItemRenderer.Name)
+      .AddKeyedScoped<IItemRenderer, HtmlItemRenderer>(HtmlItemRenderer.Name)
+      .AddKeyedScoped<IItemRenderer, ListingItemRenderer>(ListingItemRenderer.Name)
+      .AddKeyedScoped<IItemRenderer, MarkdownItemRenderer>(MarkdownItemRenderer.Name)
       .AddScoped<IItemRenderEngine, ItemRenderEngine>()
       .AddScoped<IRenderDispatcher, RenderDispatcher>()
       // Output
