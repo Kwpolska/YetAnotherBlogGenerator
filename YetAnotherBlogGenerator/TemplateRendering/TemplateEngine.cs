@@ -79,7 +79,7 @@ internal class TemplateEngine : ITemplateEngine {
   };
 
   private static ValueTask<FluidValue> DevStatusBadge(string className, string label)
-    => new StringValue($"""<span class="badge badge-{className}">{label}</span>""", encode: false);
+    => new StringValue($"""<span class="badge rounded-pill text-bg-{className}">{label}</span>""", encode: false);
 
   private static ValueTask<FluidValue> GetListingSourceUrl(FluidValue input, FilterArguments arguments,
       TemplateContext context) {

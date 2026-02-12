@@ -22,4 +22,6 @@ public class ModelBase<T>(T renderable, IConfiguration configuration) : IModelBa
   public string Title => Renderable.Title;
 
   public string Url => Renderable.Url;
+
+  public string AbsoluteUrl => new Uri(configuration.SiteUri, Url).ToString();
 }
