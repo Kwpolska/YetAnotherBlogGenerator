@@ -23,11 +23,14 @@ internal static partial class Constants {
   public const string WriteLogEventType = nameof(WriteLogEventType);
   public const string RenderLogEventType = nameof(RenderLogEventType);
 
-  public static readonly EventId BundleLog = new EventId(0, BundleLogEventType);
-  public static readonly EventId CopyLog = new EventId(0, CopyLogEventType);
-  public static readonly EventId CoreLog = new EventId(0, CoreLogEventType);
-  public static readonly EventId RenderLog = new EventId(0, RenderLogEventType);
-  public static readonly EventId WriteLog = new EventId(0, WriteLogEventType);
+  public static readonly EventId BundleLog = new(0, BundleLogEventType);
+  public static readonly EventId CopyLog = new(0, CopyLogEventType);
+  public static readonly EventId CoreLog = new(0, CoreLogEventType);
+  public static readonly EventId RenderLog = new(0, RenderLogEventType);
+  public static readonly EventId WriteLog = new(0, WriteLogEventType);
+  
+  public const uint MaxThumbnailSize = 300;
+  public const double MaxThumbnailSizeDouble = 300;
 
   public static readonly HashSet<string> SystemLogTypes =
       [CopyLogEventType, CoreLogEventType, RenderLogEventType, WriteLogEventType];

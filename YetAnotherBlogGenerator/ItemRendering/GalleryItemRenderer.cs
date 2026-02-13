@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Text;
 using CsvHelper;
 using CsvHelper.Configuration;
-using SkiaSharp;
+using ImageMagick;
 using YetAnotherBlogGenerator.Cache;
 using YetAnotherBlogGenerator.Items;
 using YetAnotherBlogGenerator.Utilities;
@@ -32,7 +32,7 @@ internal class GalleryItemRenderer(ICacheService cacheService) : ISingleItemRend
 
   private GalleryImage GetImageDetails(string sourceDirectory, CsvGalleryImage csvGalleryImage) {
     const string cacheSource = "GalleryItemRenderer.GetImageDetails";
-    const int cacheVersion = 1;
+    const int cacheVersion = 2;
 
     var path = Path.Join(sourceDirectory, csvGalleryImage.Name);
     var lastWriteTime = new DateTimeOffset(File.GetLastWriteTimeUtc(path), TimeSpan.Zero);
@@ -41,7 +41,7 @@ internal class GalleryItemRenderer(ICacheService cacheService) : ISingleItemRend
       return Image(csvGalleryImage, cacheDetails.Width, cacheDetails.Height);
     }
 
-    using var image = SKImage.FromEncodedData(path);
+    using var image = new MagickImage(path);
     var width = image.Width;
     var height = image.Height;
     cacheDetails = new CacheDetails(Version: cacheVersion, LastWriteTime: lastWriteTime, Width: width, Height: height);
@@ -50,7 +50,7 @@ internal class GalleryItemRenderer(ICacheService cacheService) : ISingleItemRend
     return Image(csvGalleryImage, width, height);
   }
 
-  private GalleryImage Image(CsvGalleryImage csvGalleryImage, int width, int height) {
+  private GalleryImage Image(CsvGalleryImage csvGalleryImage, uint width, uint height) {
     var thumbnailName = ImageHelper.GetThumbnailPath(csvGalleryImage.Name);
     var (thumbnailWidth, thumbnailHeight) = ImageHelper.ScaleThumbnail(width, height);
 
@@ -62,5 +62,5 @@ internal class GalleryItemRenderer(ICacheService cacheService) : ISingleItemRend
         Height: thumbnailHeight);
   }
 
-  private record CacheDetails(int Version, DateTimeOffset LastWriteTime, int Width, int Height);
+  private record CacheDetails(int Version, DateTimeOffset LastWriteTime, uint Width, uint Height);
 }

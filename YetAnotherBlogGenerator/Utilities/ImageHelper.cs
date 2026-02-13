@@ -9,10 +9,10 @@ namespace YetAnotherBlogGenerator.Utilities;
 internal static class ImageHelper {
   private const int MaxThumbnailSize = 300;
 
-  public static (int Width, int Height) ScaleThumbnail(int width, int height) {
+  public static (uint Width, uint Height) ScaleThumbnail(uint width, uint height) {
     return width > height
-        ? (MaxThumbnailSize, (int)((double)height / width * MaxThumbnailSize))
-        : ((int)((double)width / height * MaxThumbnailSize), MaxThumbnailSize);
+        ? (MaxThumbnailSize, (uint)((double)height / width * MaxThumbnailSize))
+        : ((uint)((double)width / height * MaxThumbnailSize), MaxThumbnailSize);
   }
 
   public static string GetThumbnailPath(string path) {

@@ -14,6 +14,6 @@ public record GalleryImage(
     [property: JsonPropertyName("description")]
     string Description,
     [property: JsonPropertyName("width")]
-    int Width,
+    uint Width,
     [property: JsonPropertyName("height")]
-    int Height);
+    uint Height);

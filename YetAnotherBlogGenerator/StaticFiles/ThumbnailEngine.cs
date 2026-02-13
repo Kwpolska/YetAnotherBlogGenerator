@@ -2,7 +2,7 @@
 // Copyright © 2025-2026, Chris Warrick. All rights reserved.
 // Licensed under the 3-clause BSD license.
 
-using SkiaSharp;
+using ImageMagick;
 using YetAnotherBlogGenerator.Cache;
 using YetAnotherBlogGenerator.Config;
 using YetAnotherBlogGenerator.Items;
@@ -67,34 +67,16 @@ internal class ThumbnailEngine(ICacheService cacheService, IConfiguration config
   }
 
   private static WriteBinaryTask GenerateThumbnail(string source, string destination) {
-    // Code based on:
-    // https://stackoverflow.com/a/79543965 
-    // https://stackoverflow.com/a/50344496
-    using var codec = SKCodec.Create(source);
-    using var originalBitmap = SKBitmap.Decode(codec);
-    using var sourceImage = SKImage.FromBitmap(originalBitmap);
+    using var image = new MagickImage(source);
 
-    (int resizedWidth, int resizedHeight) = ImageHelper.ScaleThumbnail(sourceImage.Width, sourceImage.Height);
+    if (image.Width > Constants.MaxThumbnailSize || image.Height > Constants.MaxThumbnailSize) {
+      var (thumbnailWidth, thumbnailHeight) = ImageHelper.ScaleThumbnail(image.Width, image.Height);
+      var size = new MagickGeometry(thumbnailWidth, thumbnailHeight) { IgnoreAspectRatio = true };
+      image.Resize(size);
+    }
 
-    using var surface = SKSurface.Create(new SKImageInfo {
-        Width = resizedWidth,
-        Height = resizedHeight,
-        ColorType = SKImageInfo.PlatformColorType,
-        AlphaType = SKAlphaType.Premul
-    });
-    using var paint = new SKPaint();
-    // high quality with antialiasing
-    paint.IsAntialias = true;
-
-    // draw the bitmap to fill the surface
-    surface.Canvas.DrawImage(sourceImage, new SKRectI(0, 0, resizedWidth, resizedHeight),
-        new SKSamplingOptions(new SKCubicResampler()),
-        paint);
-    surface.Canvas.Flush();
-
-    using var newImage = surface.Snapshot();
-    using var newImageData = newImage.Encode(codec.EncodedFormat, 95);
-    var content = newImageData.ToArray();
+    var content = image.ToByteArray(image.Format);
+    
     return new WriteBinaryTask(content, destination);
   }
 }
