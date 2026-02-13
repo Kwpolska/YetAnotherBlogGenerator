@@ -16,6 +16,7 @@ internal class Program {
   private static bool _watching = true;
   private static ILogger<Program>? _logger;
   private static string? _outputFolder;
+
   static async Task<int> Main(string[] args) {
     CultureInfo.CurrentCulture = new CultureInfo("en-GB");
 

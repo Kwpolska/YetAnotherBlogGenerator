@@ -3,4 +3,5 @@
     <Project Path="NikolaPostConverter/NikolaPostConverter.csproj" />
   </Folder>
   <Project Path="YetAnotherBlogGenerator/YetAnotherBlogGenerator.csproj" />
+  <Project Path="YetAnotherBlogGenerator.Tests/YetAnotherBlogGenerator.Tests.csproj" />
 </Solution>

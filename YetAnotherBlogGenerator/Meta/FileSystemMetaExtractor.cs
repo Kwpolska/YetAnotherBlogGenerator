@@ -16,7 +16,10 @@ internal class FileSystemMetaExtractor : IMetaExtractor {
     => itemFullSource;
 
   public Dictionary<string, object> ExtractMeta(string itemFullSource, string itemPath, ItemType itemType) => new() {
-      { MetaFields.Title, itemType == ItemType.Listing ? Path.GetFileName(itemPath) : Path.GetFileNameWithoutExtension(itemPath) },
+      {
+          MetaFields.Title,
+          itemType == ItemType.Listing ? Path.GetFileName(itemPath) : Path.GetFileNameWithoutExtension(itemPath)
+      },
       { MetaFields.Published, new DateTimeOffset(File.GetCreationTimeUtc(itemPath), TimeSpan.Zero) }
   };
 }

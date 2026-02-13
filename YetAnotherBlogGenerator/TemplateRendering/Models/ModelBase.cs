@@ -3,7 +3,6 @@
 // Licensed under the 3-clause BSD license.
 
 using YetAnotherBlogGenerator.Config;
-using YetAnotherBlogGenerator.Utilities;
 
 namespace YetAnotherBlogGenerator.TemplateRendering.Models;
 

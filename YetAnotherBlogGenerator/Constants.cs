@@ -28,9 +28,8 @@ internal static partial class Constants {
   public static readonly EventId CoreLog = new(0, CoreLogEventType);
   public static readonly EventId RenderLog = new(0, RenderLogEventType);
   public static readonly EventId WriteLog = new(0, WriteLogEventType);
-  
+
   public const uint MaxThumbnailSize = 300;
-  public const double MaxThumbnailSizeDouble = 300;
 
   public static readonly HashSet<string> SystemLogTypes =
       [CopyLogEventType, CoreLogEventType, RenderLogEventType, WriteLogEventType];

@@ -119,7 +119,7 @@ internal class RssGenerator(IConfiguration configuration, IUrlHelper urlHelper)
 
   private static void SanitizeUrlsCore(Uri pageUri, HtmlDocument doc, string xpath, string attribute) {
     var links = doc.DocumentNode.SelectNodes(xpath);
-    
+
     // This can actually be null, HtmlAgilityPack has nullable reference types enabled, but not actually specified in the codebase
     if (links == null) return;
 

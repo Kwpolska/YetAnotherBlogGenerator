@@ -76,7 +76,7 @@ internal class ThumbnailEngine(ICacheService cacheService, IConfiguration config
     }
 
     var content = image.ToByteArray(image.Format);
-    
+
     return new WriteBinaryTask(content, destination);
   }
 }

@@ -7,12 +7,10 @@ using System.Text;
 namespace YetAnotherBlogGenerator.Utilities;
 
 internal static class ImageHelper {
-  private const int MaxThumbnailSize = 300;
-
   public static (uint Width, uint Height) ScaleThumbnail(uint width, uint height) {
     return width > height
-        ? (MaxThumbnailSize, (uint)((double)height / width * MaxThumbnailSize))
-        : ((uint)((double)width / height * MaxThumbnailSize), MaxThumbnailSize);
+        ? (Constants.MaxThumbnailSize, (uint)((double)height / width * Constants.MaxThumbnailSize))
+        : ((uint)((double)width / height * Constants.MaxThumbnailSize), Constants.MaxThumbnailSize);
   }
 
   public static string GetThumbnailPath(string path) {

@@ -2,8 +2,6 @@
 // Copyright © 2025-2026, Chris Warrick. All rights reserved.
 // Licensed under the 3-clause BSD license.
 
-using System.Collections.Concurrent;
-using System.Security.Cryptography;
 using Fluid;
 using Fluid.Values;
 using Fluid.ViewEngine;
@@ -23,9 +21,8 @@ internal class TemplateEngine : ITemplateEngine {
   private readonly TemplateOptions _templateOptions;
   private readonly ICacheBustingService _cacheBustingService;
   private readonly IConfiguration _configuration;
-  private readonly IUrlHelper _urlHelper;
 
-  public TemplateEngine(ICacheBustingService cacheBustingService, IConfiguration configuration, IUrlHelper urlHelper) {
+  public TemplateEngine(ICacheBustingService cacheBustingService, IConfiguration configuration) {
     var options = new FluidViewEngineOptions();
     options.Parser = new FluidViewParser(new FluidParserOptions() { AllowFunctions = true });
     var templateFolder = Path.Join(configuration.SourceRoot, CommonFolders.Templates);
@@ -64,7 +61,6 @@ internal class TemplateEngine : ITemplateEngine {
     _templateOptions = options.TemplateOptions;
     _cacheBustingService = cacheBustingService;
     _configuration = configuration;
-    _urlHelper = urlHelper;
   }
 
   private static ValueTask<FluidValue> GetCategoryColor(FluidValue input, FilterArguments arguments,
@@ -86,7 +82,7 @@ internal class TemplateEngine : ITemplateEngine {
       _ => DevStatusBadge("default", "Unknown")
   };
 
-  private async ValueTask<FluidValue> GetCacheBustedUrl(FluidValue input, FilterArguments arguments,
+  private ValueTask<FluidValue> GetCacheBustedUrl(FluidValue input, FilterArguments arguments,
       TemplateContext context) {
     var url = input.ToStringValue();
     return new StringValue(_cacheBustingService.Get(url));
