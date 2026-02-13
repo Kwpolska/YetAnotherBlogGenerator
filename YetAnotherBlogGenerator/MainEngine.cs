@@ -19,6 +19,7 @@ namespace YetAnotherBlogGenerator;
 
 internal class MainEngine(
     IAssetBundleEngine assetBundleEngine,
+    ICacheBustingService cacheBustingService,
     ICacheService cacheService,
     IGroupEngine groupEngine,
     IItemRenderEngine itemRenderEngine,
@@ -70,9 +71,10 @@ internal class MainEngine(
     await outputEngine.ExecuteMany(copyTasks).ConfigureAwait(false);
     FinishAction("Copied", copyTasks.Length, "files");
 
-    StartAction("bundles", "Generating asset bundles");
+    StartAction("assets", "Processing assets");
     var assetBundleCount = await assetBundleEngine.BundleAssets().ConfigureAwait(false);
-    FinishAction("Generated", assetBundleCount, "bundles");
+    await cacheBustingService.PreCacheAssetUrls().ConfigureAwait(false); // trivial, no separate log message needed
+    FinishAction("Generated", assetBundleCount, "asset bundles");
 
     StartAction("thumbnails", "Generating thumbnails");
     var thumbnailTasks = thumbnailEngine.GenerateThumbnailsForImagesFolder()

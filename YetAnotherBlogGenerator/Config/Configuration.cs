@@ -20,7 +20,9 @@ internal class Configuration(
 
   public MenuItem[] MenuItems { get; } = siteConfiguration.Menu;
   public ScanPattern[] ScanPatterns { get; } = siteConfiguration.ScanPatterns;
-  public AssetBundle[] AssetBundles { get; } = siteConfiguration.AssetBundles;
+  public AssetBundle[] AssetBundles { get; } = siteConfiguration.Assets.Bundles;
+  public string[] AssetUrls { get; } = siteConfiguration.Assets.Urls;
+  public string[] WatchIgnore { get; } = siteConfiguration.WatchIgnore;
 
   public int IndexSize { get; } = siteConfiguration.Grouping.IndexSize;
   public int FeedSize { get; } = siteConfiguration.Grouping.FeedSize;

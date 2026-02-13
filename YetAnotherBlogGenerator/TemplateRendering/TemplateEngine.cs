@@ -12,6 +12,7 @@ using YetAnotherBlogGenerator.Config;
 using YetAnotherBlogGenerator.Groups;
 using YetAnotherBlogGenerator.Items;
 using YetAnotherBlogGenerator.Meta;
+using YetAnotherBlogGenerator.StaticFiles;
 using YetAnotherBlogGenerator.TemplateRendering.Models;
 using YetAnotherBlogGenerator.Utilities;
 
@@ -20,11 +21,11 @@ namespace YetAnotherBlogGenerator.TemplateRendering;
 internal class TemplateEngine : ITemplateEngine {
   private readonly FluidViewRenderer _renderer;
   private readonly TemplateOptions _templateOptions;
+  private readonly ICacheBustingService _cacheBustingService;
   private readonly IConfiguration _configuration;
   private readonly IUrlHelper _urlHelper;
-  private readonly ConcurrentDictionary<string, string> _cacheBustingLinksCache = new();
 
-  public TemplateEngine(IConfiguration configuration, IUrlHelper urlHelper) {
+  public TemplateEngine(ICacheBustingService cacheBustingService, IConfiguration configuration, IUrlHelper urlHelper) {
     var options = new FluidViewEngineOptions();
     options.Parser = new FluidViewParser(new FluidParserOptions() { AllowFunctions = true });
     var templateFolder = Path.Join(configuration.SourceRoot, CommonFolders.Templates);
@@ -58,9 +59,10 @@ internal class TemplateEngine : ITemplateEngine {
     options.TemplateOptions.Filters.AddFilter("categoryColor", GetCategoryColor);
     options.TemplateOptions.Filters.AddFilter("listingSourceUrl", GetListingSourceUrl);
     options.TemplateOptions.Filters.AddFilter("projectDevStatus", GetDevStatus);
-    options.TemplateOptions.Filters.AddFilter("cacheBusting", GetCacheBustingLink);
+    options.TemplateOptions.Filters.AddFilter("cacheBusting", GetCacheBustedUrl);
     _renderer = new FluidViewRenderer(options);
     _templateOptions = options.TemplateOptions;
+    _cacheBustingService = cacheBustingService;
     _configuration = configuration;
     _urlHelper = urlHelper;
   }
@@ -84,20 +86,10 @@ internal class TemplateEngine : ITemplateEngine {
       _ => DevStatusBadge("default", "Unknown")
   };
 
-  private async ValueTask<FluidValue> GetCacheBustingLink(FluidValue input, FilterArguments arguments,
+  private async ValueTask<FluidValue> GetCacheBustedUrl(FluidValue input, FilterArguments arguments,
       TemplateContext context) {
     var url = input.ToStringValue();
-    if (_cacheBustingLinksCache.TryGetValue(url, out var cachedValue)) {
-      return new StringValue($"{url}?md5={cachedValue}");
-    }
-
-    var path = _urlHelper.UrlToOutputPath(url);
-    var data = await File.ReadAllBytesAsync(path).ConfigureAwait(false);
-    var hash = MD5.HashData(data);
-    var stringHash = Convert.ToHexString(hash).ToLower();
-    _cacheBustingLinksCache.TryAdd(url, stringHash);
-
-    return new StringValue($"{url}?c={stringHash}");
+    return new StringValue(_cacheBustingService.Get(url));
   }
 
   private static ValueTask<FluidValue> DevStatusBadge(string className, string label)

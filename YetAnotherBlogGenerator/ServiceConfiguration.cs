@@ -51,6 +51,7 @@ internal static class ServiceConfiguration {
       .AddScoped<IItemScanner, FileSystemItemScanner>()
       // Static files
       .AddScoped<IAssetBundleEngine, AssetBundleEngine>()
+      .AddScoped<ICacheBustingService, CacheBustingService>()
       .AddScoped<IStaticFileEngine, StaticFileEngine>()
       .AddScoped<IThumbnailEngine, ThumbnailEngine>()
       // Templating

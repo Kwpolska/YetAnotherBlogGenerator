@@ -19,13 +19,15 @@ public interface IConfiguration {
 
   MenuItem[] MenuItems { get; }
   ScanPattern[] ScanPatterns { get; }
+  AssetBundle[] AssetBundles { get; }
+  string[] AssetUrls { get; }
+  string[] WatchIgnore { get; }
 
   int IndexSize { get; }
   int FeedSize { get; }
 
   Dictionary<string, string> CategoryColors { get; }
   Dictionary<string, string> TagsAndCategoriesCustomSlugs { get; }
-  AssetBundle[] AssetBundles { get; }
 
   string PygmentsAdapterPythonBinary { get; }
 }
