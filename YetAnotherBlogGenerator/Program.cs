@@ -106,7 +106,6 @@ internal class Program {
   }
 
   private static void OnChanged(object sender, FileSystemEventArgs e) {
-    Console.WriteLine($"OnChanged {e.FullPath}");
     if (e.FullPath.Contains(Constants.CacheFileName)) {
       return;
     }

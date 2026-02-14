@@ -23,4 +23,5 @@ public record Item(
   public DateTimeOffset Published => Meta.Published;
   public DateTimeOffset? Updated => Meta.Updated;
   public string TemplateName => Meta.Template ?? ScanPattern.TemplateName;
+  public string ContentTag => Meta.Legacy ? "content-legacy" : $"content-{ScanPattern.RendererName}";
 }

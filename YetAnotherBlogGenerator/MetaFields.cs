@@ -22,5 +22,6 @@ internal static class MetaFields {
   public const string GuidePlatform = "guidePlatform";
   public const string GuideTopic = "guideTopic";
 
+  public const string HtmlTitle = "htmlTitle";
   public const string GalleryIntroHtml = "galleryIntroHtml";
 }
