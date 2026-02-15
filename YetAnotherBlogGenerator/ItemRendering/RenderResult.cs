@@ -6,4 +6,8 @@ using YetAnotherBlogGenerator.Items;
 
 namespace YetAnotherBlogGenerator.ItemRendering;
 
-internal record BulkRenderResult(SourceItem Item, string Html, IRichItemData? RichItemData = null);
+internal record RenderResult(
+    SourceItem Item,
+    string Html,
+    IRichItemData? RichItemData = null,
+    TableOfContentsItem[]? TableOfContents = null);

@@ -16,6 +16,7 @@ internal static class MetaFields {
   public const string Comments = "comments";
   public const string ShortLink = "shortlink";
   public const string Legacy = "legacy";
+  public const string ShowTableOfContents = "showTableOfContents";
 
   public const string Guide = "guide";
   public const string GuideEffect = "guideEffect";

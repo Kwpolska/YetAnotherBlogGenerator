@@ -10,7 +10,7 @@ namespace YetAnotherBlogGenerator.ItemRendering;
 internal class ListingItemRenderer(IListingRenderer listingRenderer) : IBulkItemRenderer {
   public const string Name = RendererNames.Listing;
 
-  public async Task<BulkRenderResult[]> RenderFullHtml(IEnumerable<SourceItem> items) {
+  public async Task<RenderResult[]> RenderItems(IEnumerable<SourceItem> items) {
     var sourceItems = items
         .Select(item => new ExternalRenderSource(Guid.NewGuid(), item, item.Source))
         .ToArray();
@@ -21,7 +21,7 @@ internal class ListingItemRenderer(IListingRenderer listingRenderer) : IBulkItem
     return sourceItems.Select(i => {
       var htmlFound = responsesDict.TryGetValue(i.Guid, out var html);
       return htmlFound
-          ? new BulkRenderResult(i.Item, html!)
+          ? new RenderResult(i.Item, html!)
           : throw new Exception($"Request for item {i.Item} was not returned by Pygments");
     }).ToArray();
   }

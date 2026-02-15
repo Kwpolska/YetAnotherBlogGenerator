@@ -7,5 +7,5 @@ using YetAnotherBlogGenerator.Items;
 namespace YetAnotherBlogGenerator.ItemRendering;
 
 internal interface IBulkItemRenderer : IItemRenderer {
-  Task<BulkRenderResult[]> RenderFullHtml(IEnumerable<SourceItem> items);
+  Task<RenderResult[]> RenderItems(IEnumerable<SourceItem> items);
 }

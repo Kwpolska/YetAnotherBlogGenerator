@@ -16,6 +16,7 @@ public record Item(
     ItemMeta Meta,
     string Content,
     string Teaser,
+    IReadOnlyCollection<TableOfContentsItem> TableOfContents,
     IRichItemData? RichItemData
 ) : IRenderable {
   public string Title => Meta.Title;

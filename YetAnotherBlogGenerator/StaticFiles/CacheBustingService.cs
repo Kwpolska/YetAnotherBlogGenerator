@@ -4,6 +4,7 @@
 
 using System.Buffers.Text;
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using YetAnotherBlogGenerator.Config;
 using YetAnotherBlogGenerator.Utilities;
@@ -35,6 +36,7 @@ internal class CacheBustingService(IConfiguration configuration, IUrlHelper urlH
     _urlsCache.TryAdd(url, result);
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private static string GetUrl(string url, ReadOnlySpan<byte> hashBytes)
     => $"{url}?v={Base64Url.EncodeToString(hashBytes)}";
 }

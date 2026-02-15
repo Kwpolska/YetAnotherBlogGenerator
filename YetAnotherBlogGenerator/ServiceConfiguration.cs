@@ -63,6 +63,8 @@ internal static class ServiceConfiguration {
       .AddScoped<IThumbnailEngine, ThumbnailEngine>()
       // Templating
       .AddScoped<ITemplateEngine, TemplateEngine>()
+      // Utilities
+      .AddScoped<ITableOfContentsGenerator, TableOfContentsGenerator>()
       // XML
       .AddScoped<IRssGenerator, RssGenerator>()
       .AddScoped<ISitemapGenerator, SitemapGenerator>();

@@ -2,6 +2,7 @@
 // Copyright © 2025-2026, Chris Warrick. All rights reserved.
 // Licensed under the 3-clause BSD license.
 
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using HtmlAgilityPack;
 using YetAnotherBlogGenerator.Config;
@@ -78,6 +79,7 @@ internal class RssGenerator(IConfiguration configuration, IUrlHelper urlHelper)
     return new Uri(configuration.SiteUri, url);
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private static string FormatDate(DateTimeOffset date) => date.ToString("r");
 
   private string StripHtmlWithCache(string html, string pageUrl) {
@@ -118,10 +120,7 @@ internal class RssGenerator(IConfiguration configuration, IUrlHelper urlHelper)
   }
 
   private static void SanitizeUrlsCore(Uri pageUri, HtmlDocument doc, string xpath, string attribute) {
-    var links = doc.DocumentNode.SelectNodes(xpath);
-
-    // This can actually be null, HtmlAgilityPack has nullable reference types enabled, but not actually specified in the codebase
-    if (links == null) return;
+    var links = doc.DocumentNode.SelectNodes2(xpath);
 
     foreach (var link in links) {
       var href = link.GetAttributeValue(attribute, "");

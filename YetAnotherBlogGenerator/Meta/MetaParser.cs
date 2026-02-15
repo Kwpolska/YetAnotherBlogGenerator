@@ -73,6 +73,7 @@ internal class MetaParser : IMetaParser {
         Project: itemType == ItemType.Project ? ParseProjectMeta(metaReader) : null,
         PublishedDateInSource: sourceMeta.ContainsKey(MetaFields.Published),
         Legacy: ParseBoolean(metaReader.GetValueOrDefault(MetaFields.Legacy)) ?? false,
+        ShowTableOfContents: ParseBoolean(metaReader.GetValueOrDefault(MetaFields.ShowTableOfContents)) ?? false,
         HtmlTitle: metaReader.GetString(MetaFields.HtmlTitle),
         CustomFields: sourceMeta
     );

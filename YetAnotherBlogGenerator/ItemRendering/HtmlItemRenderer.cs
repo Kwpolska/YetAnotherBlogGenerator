@@ -9,6 +9,6 @@ namespace YetAnotherBlogGenerator.ItemRendering;
 internal class HtmlItemRenderer : ISingleItemRenderer {
   public const string Name = RendererNames.Html;
 
-  public Task<string> RenderFullHtml(SourceItem item)
-    => Task.FromResult(item.Source);
+  public Task<RenderResult> RenderItem(SourceItem item)
+    => Task.FromResult(new RenderResult(item, item.Source));
 }

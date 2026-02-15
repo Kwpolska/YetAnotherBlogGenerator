@@ -6,10 +6,11 @@ using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using YetAnotherBlogGenerator.Config;
 using YetAnotherBlogGenerator.Items;
+using YetAnotherBlogGenerator.Utilities;
 
 namespace YetAnotherBlogGenerator.ItemRendering;
 
-internal class ItemRenderEngine(IConfiguration configuration, IServiceProvider serviceProvider) : IItemRenderEngine {
+internal class ItemRenderEngine(IConfiguration configuration, IServiceProvider serviceProvider, ITableOfContentsGenerator tableOfContentsGenerator) : IItemRenderEngine {
   private readonly IKeyedServiceProvider _keyedServiceProvider = (IKeyedServiceProvider)serviceProvider;
 
   public async Task<IEnumerable<Item>> Render(IEnumerable<SourceItem> sourceItems) {
@@ -18,9 +19,9 @@ internal class ItemRenderEngine(IConfiguration configuration, IServiceProvider s
         .Select(group => {
           var renderer = _keyedServiceProvider.GetRequiredKeyedService<IItemRenderer>(group.Key);
           return renderer switch {
-              IBulkItemRenderer bulkRenderer => bulkRenderer.RenderFullHtml(group),
+              IBulkItemRenderer bulkRenderer => bulkRenderer.RenderItems(group),
               ISingleItemRenderer singleRenderer => Task.WhenAll(
-                  group.Select(item => RenderWithSingleRenderer(singleRenderer, item))),
+                  group.Select(singleRenderer.RenderItem)),
               _ => throw new InvalidOperationException("Unexpected renderer type")
           };
         });
@@ -41,6 +42,12 @@ internal class ItemRenderEngine(IConfiguration configuration, IServiceProvider s
               teaser = splitResult[0];
               content = splitResult[1];
             }
+          }
+
+          IReadOnlyCollection<TableOfContentsItem> tableOfContents = [];
+
+          if (sourceItem.ScanPattern.SupportsTablesOfContents) {
+            tableOfContents = result.TableOfContents ?? tableOfContentsGenerator.ExtractTableOfContents(html, sourceItem.Meta.Legacy);
           }
 
           var urlBuilder = new StringBuilder(sourceItem.SourcePath.Length - configuration.SourceRoot.Length);
@@ -79,15 +86,9 @@ internal class ItemRenderEngine(IConfiguration configuration, IServiceProvider s
               Meta: sourceItem.Meta,
               Content: content,
               Teaser: teaser,
+              TableOfContents: tableOfContents,
               RichItemData: richItemData
           );
         });
-  }
-
-  private static async Task<BulkRenderResult> RenderWithSingleRenderer(ISingleItemRenderer singleRenderer,
-      SourceItem item) {
-    var html = await singleRenderer.RenderFullHtml(item).ConfigureAwait(false);
-    var richItemData = await singleRenderer.GenerateRichItemData(item).ConfigureAwait(false);
-    return new BulkRenderResult(item, html, richItemData);
   }
 }

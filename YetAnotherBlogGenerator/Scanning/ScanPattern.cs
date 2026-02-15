@@ -13,6 +13,7 @@ public class ScanPattern {
   public required string RendererName { get; init; }
   public required string TemplateName { get; init; }
   public required string TargetDirectory { get; init; }
+  public bool SupportsTablesOfContents { get; init; } = true;
   public bool SupportsTeasers { get; init; } = true;
   public bool UsePrettyUrls { get; init; } = true;
   public bool IncludeInSitemap { get; init; } = true;

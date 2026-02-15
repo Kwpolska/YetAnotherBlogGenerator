@@ -4,6 +4,7 @@
 
 using System.Text;
 using System.Text.RegularExpressions;
+using HtmlAgilityPack;
 
 namespace YetAnotherBlogGenerator.Utilities;
 
@@ -42,6 +43,12 @@ internal static partial class Extensions {
     // 2001 truly was a different time, and I feel weird adding extensions to a static class.
     public static Encoding UTF8NoBom => Utf8NoBom;
   }
+
+  /// <summary>
+  /// Select nodes that match <paramref name="xpath" />. Unlike <see cref="HtmlNode.SelectNodes(string)" />, this never returns null.
+  /// </summary>
+  public static HtmlNodeCollection SelectNodes2(this HtmlNode node, string xpath)
+    => node.SelectNodes(xpath) ?? new HtmlNodeCollection(node);
 
   [GeneratedRegex(@"[^\w\s-]")]
   private static partial Regex SlugifyInvalidCharacterRegexSource();

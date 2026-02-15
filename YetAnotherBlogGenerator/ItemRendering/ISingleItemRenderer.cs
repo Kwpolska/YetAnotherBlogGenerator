@@ -7,9 +7,5 @@ using YetAnotherBlogGenerator.Items;
 namespace YetAnotherBlogGenerator.ItemRendering;
 
 internal interface ISingleItemRenderer : IItemRenderer {
-  Task<string> RenderFullHtml(SourceItem item);
-
-  ValueTask<IRichItemData?> GenerateRichItemData(SourceItem item) {
-    return ValueTask.FromResult<IRichItemData?>(null);
-  }
+  Task<RenderResult> RenderItem(SourceItem item);
 }

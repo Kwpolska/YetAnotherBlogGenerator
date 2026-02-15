@@ -16,18 +16,18 @@ namespace YetAnotherBlogGenerator.ItemRendering;
 internal class GalleryItemRenderer(ICacheService cacheService) : ISingleItemRenderer {
   public const string Name = RendererNames.Gallery;
 
-  public Task<string> RenderFullHtml(SourceItem item) {
-    return Task.FromResult((string)item.Meta.CustomFields.GetValueOrDefault(MetaFields.GalleryIntroHtml, ""));
-  }
+  public Task<RenderResult> RenderItem(SourceItem item) {
+    var html = (string)item.Meta.CustomFields.GetValueOrDefault(MetaFields.GalleryIntroHtml, "");
 
-  public ValueTask<IRichItemData?> GenerateRichItemData(SourceItem item) {
     using var reader = new StringReader(item.Source);
     var sourceDirectory = Path.GetDirectoryName(item.SourcePath)!;
     var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = "\t", Encoding = Encoding.UTF8 };
     using var csv = new CsvReader(reader, config);
     var csvImages = csv.GetRecords<CsvGalleryImage>().ToArray();
     var images = csvImages.Select(i => GetImageDetails(sourceDirectory, i)).ToArray();
-    return new ValueTask<IRichItemData?>(new GalleryData(images));
+
+    var result = new RenderResult(Item: item, Html: html, RichItemData: new GalleryData(images));
+    return Task.FromResult(result);
   }
 
   private GalleryImage GetImageDetails(string sourceDirectory, CsvGalleryImage csvGalleryImage) {
