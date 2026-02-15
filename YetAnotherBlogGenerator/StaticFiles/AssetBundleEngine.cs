@@ -10,13 +10,12 @@ namespace YetAnotherBlogGenerator.StaticFiles;
 
 public class AssetBundleEngine(IConfiguration configuration, ILogger<AssetBundleEngine> logger, IUrlHelper urlHelper)
     : IAssetBundleEngine {
-  public async Task<int> BundleAssets() {
+  public async Task<string[]> BundleAssets() {
     var tasks = configuration.AssetBundles.Select(BundleAssetsCore);
-    await Task.WhenAll(tasks).ConfigureAwait(false);
-    return configuration.AssetBundles.Length;
+    return await Task.WhenAll(tasks).ConfigureAwait(false);
   }
 
-  private async Task BundleAssetsCore(AssetBundle bundle) {
+  private async Task<string> BundleAssetsCore(AssetBundle bundle) {
     var outputPath = urlHelper.UrlToOutputPath(bundle.OutputUrl);
     logger.LogDebug(Constants.BundleLog, "{Destination}", outputPath);
     var outputStream = new FileStream(outputPath, FileMode.Create);
@@ -28,5 +27,7 @@ public class AssetBundleEngine(IConfiguration configuration, ILogger<AssetBundle
         await inputStream.CopyToAsync(outputStream).ConfigureAwait(false);
       }
     }
+
+    return outputPath;
   }
 }

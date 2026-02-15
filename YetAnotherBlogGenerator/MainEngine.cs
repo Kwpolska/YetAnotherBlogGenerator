@@ -99,9 +99,9 @@ internal class MainEngine(
     FinishAction("Copied", copyTasks.Length, "files");
 
     StartAction("assets", "Processing assets");
-    var assetBundleCount = await assetBundleEngine.BundleAssets().ConfigureAwait(false);
+    var assetBundleOutputPaths = await assetBundleEngine.BundleAssets().ConfigureAwait(false);
     await cacheBustingService.PreCacheAssetUrls().ConfigureAwait(false); // trivial, no separate log message needed
-    FinishAction("Generated", assetBundleCount, "asset bundles");
+    FinishAction("Generated", assetBundleOutputPaths.Length, "asset bundles");
 
     StartAction("thumbnails", "Generating thumbnails");
     var thumbnailTasks = thumbnailEngine.GenerateThumbnailsForImagesFolder()
@@ -133,6 +133,7 @@ internal class MainEngine(
         .Select(r => new WrittenRenderable(urlHelper.UrlToOutputPath(r.Url), r));
 
     var duplicates = allOutputTasks.Cast<IWritten>().Concat(allRenderables)
+        .Concat(assetBundleOutputPaths.Select(b => new WrittenBundle(b)))
         .GroupBy(w => w.Destination)
         .Where(g => g.Count() > 1)
         .ToArray();
@@ -172,4 +173,5 @@ internal class MainEngine(
 
   private record WrittenOutputTask(string Destination, IOutputTask Task) : IWritten;
   private record WrittenRenderable(string Destination, IRenderable Renderable) : IWritten;
+  private record WrittenBundle(string Destination) : IWritten;
 }

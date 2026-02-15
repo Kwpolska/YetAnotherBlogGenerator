@@ -5,5 +5,5 @@
 namespace YetAnotherBlogGenerator.StaticFiles;
 
 public interface IAssetBundleEngine {
-  public Task<int> BundleAssets();
+  public Task<string[]> BundleAssets();
 }
