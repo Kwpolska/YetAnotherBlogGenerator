@@ -6,5 +6,5 @@ namespace YetAnotherBlogGenerator.ItemRendering.External;
 
 internal interface IListingRenderer {
   public Task<string> RenderSingleListing(string code, string? path, string? language);
-  public Task<List<ExternalRenderResponse>> RenderMultipleListings(IEnumerable<ExternalRenderRequest> requests);
+  public Task<IReadOnlyCollection<ExternalRenderResponse>> RenderMultipleListings(IEnumerable<ExternalRenderRequest> requests);
 }

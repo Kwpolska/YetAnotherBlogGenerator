@@ -9,7 +9,7 @@ namespace YetAnotherBlogGenerator.Grouping;
 
 internal class GroupEngine(IEnumerable<IItemGrouper> itemGroupers, IEnumerable<IPostGrouper> postGroupers)
     : IGroupEngine {
-  public IGroup[] GenerateGroups(Item[] items) {
+  public IEnumerable<IGroup> GenerateGroups(Item[] items) {
     var sortedItems = items
         .OrderByDescending(i => i.Published)
         .ThenBy(i => i.SourcePath)
@@ -21,6 +21,6 @@ internal class GroupEngine(IEnumerable<IItemGrouper> itemGroupers, IEnumerable<I
 
     var itemGroups = itemGroupers.SelectMany(g => g.GroupItems(sortedItems));
     var postGroups = postGroupers.SelectMany(g => g.GroupPosts(sortedPosts));
-    return itemGroups.Concat(postGroups).ToArray();
+    return itemGroups.Concat(postGroups);
   }
 }

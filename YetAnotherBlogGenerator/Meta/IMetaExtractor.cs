@@ -11,6 +11,6 @@ internal interface IMetaExtractor {
   string Name { get; }
   bool SupportsItemType(ItemType itemType);
 
-  Dictionary<string, object>? ExtractMeta(string itemFullSource, string itemPath, ItemType itemType);
+  IReadOnlyDictionary<string, object>? ExtractMeta(string itemFullSource, string itemPath, ItemType itemType);
   string ExtractContentSource(string itemFullSource, string itemPath);
 }

@@ -13,9 +13,9 @@ namespace YetAnotherBlogGenerator.ItemRendering.External;
 internal class CachingPygmentsRenderer(
     ICacheService cacheService,
     ILogger<CachingPygmentsRenderer> logger,
-    PygmentsRenderer pygmentsRenderer
-) : IListingRenderer {
-  private const string CacheSource = "pygments:1";
+    IPygmentsRenderer pygmentsRenderer
+) : ICachingPygmentsRenderer {
+  private const string CacheSource = "pygments";
 
   public async Task<string> RenderSingleListing(string code, string? path, string? language) {
     var cacheKey = GetCacheKey(code, path, language);
@@ -30,7 +30,7 @@ internal class CachingPygmentsRenderer(
     return freshResult;
   }
 
-  public async Task<List<ExternalRenderResponse>> RenderMultipleListings(IEnumerable<ExternalRenderRequest> requests) {
+  public async Task<IReadOnlyCollection<ExternalRenderResponse>> RenderMultipleListings(IEnumerable<ExternalRenderRequest> requests) {
     var missingRequests = new List<ExternalRenderRequest>();
     var cachedResults = new List<ExternalRenderResponse>();
     var cacheKeyPerGuid = new Dictionary<Guid, string>();

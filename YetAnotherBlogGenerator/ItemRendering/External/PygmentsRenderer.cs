@@ -10,7 +10,7 @@ using YetAnotherBlogGenerator.Config;
 
 namespace YetAnotherBlogGenerator.ItemRendering.External;
 
-internal class PygmentsRenderer(IConfiguration configuration) : IListingRenderer {
+internal class PygmentsRenderer(IConfiguration configuration) : IPygmentsRenderer {
   private static readonly JsonSerializerOptions JsonSerializerOptions = new(JsonSerializerDefaults.Web) {
       Encoder = JavaScriptEncoder.Default, DefaultIgnoreCondition = JsonIgnoreCondition.Never
   };
@@ -21,7 +21,7 @@ internal class PygmentsRenderer(IConfiguration configuration) : IListingRenderer
     return responses.Single().Html;
   }
 
-  public async Task<List<ExternalRenderResponse>> RenderMultipleListings(IEnumerable<ExternalRenderRequest> requests) {
+  public async Task<IReadOnlyCollection<ExternalRenderResponse>> RenderMultipleListings(IEnumerable<ExternalRenderRequest> requests) {
     var requestsJson = JsonSerializer.Serialize(requests, JsonSerializerOptions);
     var requestsJsonMemory = new ReadOnlyMemory<char>(requestsJson.ToCharArray());
 

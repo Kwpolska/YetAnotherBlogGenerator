@@ -23,7 +23,7 @@ internal partial class YamlMetaExtractor(ILogger<YamlMetaExtractor> logger) : IM
     return items.Last();
   }
 
-  public Dictionary<string, object>? ExtractMeta(string itemFullSource, string itemPath, ItemType itemType) {
+  public IReadOnlyDictionary<string, object>? ExtractMeta(string itemFullSource, string itemPath, ItemType itemType) {
     var items = SeparatorRegex.Split(itemFullSource, 3);
     var yaml = items.Skip(1).FirstOrDefault();
     if (yaml == null) {

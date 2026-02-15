@@ -64,30 +64,11 @@ internal class MainEngine(
     FinishAction("Rendered", items.Length, "items");
 
     StartAction("group", "Grouping items");
-    var groups = groupEngine.GenerateGroups(items);
-    FinishAction("Generated", groups.Length, "groups");
-
-    StartAction("static", "Copying static files");
-    var copyTasks = staticFileEngine.CopyAllFiles().Concat(staticFileEngine.CopyItemFiles(items)).ToArray();
-    await outputEngine.ExecuteMany(copyTasks).ConfigureAwait(false);
-    FinishAction("Copied", copyTasks.Length, "files");
-
-    StartAction("assets", "Processing assets");
-    var assetBundleCount = await assetBundleEngine.BundleAssets().ConfigureAwait(false);
-    await cacheBustingService.PreCacheAssetUrls().ConfigureAwait(false); // trivial, no separate log message needed
-    FinishAction("Generated", assetBundleCount, "asset bundles");
-
-    StartAction("thumbnails", "Generating thumbnails");
-    var thumbnailTasks = thumbnailEngine.GenerateThumbnailsForImagesFolder()
-        .Concat(thumbnailEngine.GenerateThumbnailsForItems(items)).ToArray();
-    await outputEngine.ExecuteMany(thumbnailTasks).ConfigureAwait(false);
-    FinishAction("Generated", thumbnailTasks.Length, "thumbnails");
-
-    var htmlGroups = new List<IHtmlGroup>(groups.Length);
-    var rssFeeds = new List<RssFeed>(groups.Length);
+    var htmlGroups = new List<IHtmlGroup>();
+    var rssFeeds = new List<RssFeed>();
     NavigationGroup? foundNavigationGroup = null;
 
-    foreach (var group in groups) {
+    foreach (var group in groupEngine.GenerateGroups(items)) {
       switch (group) {
         case RssFeed rg:
           rssFeeds.Add(rg);
@@ -108,6 +89,23 @@ internal class MainEngine(
     }
 
     var navigationGroup = foundNavigationGroup ?? throw new InvalidOperationException("Navigation group not found");
+    FinishAction("Generated", htmlGroups.Count + rssFeeds.Count + 1, "groups");
+
+    StartAction("static", "Copying static files");
+    var copyTasks = staticFileEngine.CopyAllFiles().Concat(staticFileEngine.CopyItemFiles(items)).ToArray();
+    await outputEngine.ExecuteMany(copyTasks).ConfigureAwait(false);
+    FinishAction("Copied", copyTasks.Length, "files");
+
+    StartAction("assets", "Processing assets");
+    var assetBundleCount = await assetBundleEngine.BundleAssets().ConfigureAwait(false);
+    await cacheBustingService.PreCacheAssetUrls().ConfigureAwait(false); // trivial, no separate log message needed
+    FinishAction("Generated", assetBundleCount, "asset bundles");
+
+    StartAction("thumbnails", "Generating thumbnails");
+    var thumbnailTasks = thumbnailEngine.GenerateThumbnailsForImagesFolder()
+        .Concat(thumbnailEngine.GenerateThumbnailsForItems(items)).ToArray();
+    await outputEngine.ExecuteMany(thumbnailTasks).ConfigureAwait(false);
+    FinishAction("Generated", thumbnailTasks.Length, "thumbnails");
 
     StartAction("html items", "Rendering items to HTML pages");
     await renderDispatcher.RenderItems(items, navigationGroup).ConfigureAwait(false);

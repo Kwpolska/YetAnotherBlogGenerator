@@ -45,8 +45,9 @@ internal static class ServiceConfiguration {
       .AddScoped<IItemRenderEngine, ItemRenderEngine>()
       .AddScoped<IRenderDispatcher, RenderDispatcher>()
       // Listings
-      .AddScoped<PygmentsRenderer>()
-      .AddScoped<IListingRenderer, CachingPygmentsRenderer>()
+      .AddScoped<IPygmentsRenderer, PygmentsRenderer>()
+      .AddScoped<ICachingPygmentsRenderer, CachingPygmentsRenderer>()
+      .AddScoped<IListingRenderer>(s => s.GetRequiredService<ICachingPygmentsRenderer>())
       // Meta
       .AddScoped<IMetaExtractor, YamlMetaExtractor>()
       .AddScoped<IMetaExtractor, FileSystemMetaExtractor>()

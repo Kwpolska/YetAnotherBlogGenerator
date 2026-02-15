@@ -139,7 +139,7 @@ internal class MetaParser : IMetaParser {
       Featured: ParseBoolean(metaReader.GetValueOrDefault("featured")) ?? false
   );
 
-  private static Dictionary<string, object>? UseCaseInsensitiveComparer(Dictionary<string, object>? d) {
+  private static Dictionary<string, object>? UseCaseInsensitiveComparer(IReadOnlyDictionary<string, object>? d) {
     return d == null ? null : new Dictionary<string, object>(d, StringComparer.InvariantCultureIgnoreCase);
   }
 }

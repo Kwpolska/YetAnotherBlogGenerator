@@ -15,7 +15,7 @@ internal class FileSystemMetaExtractor : IMetaExtractor {
   public string ExtractContentSource(string itemFullSource, string itemPath)
     => itemFullSource;
 
-  public Dictionary<string, object> ExtractMeta(string itemFullSource, string itemPath, ItemType itemType) => new() {
+  public IReadOnlyDictionary<string, object> ExtractMeta(string itemFullSource, string itemPath, ItemType itemType) => new Dictionary<string, object> {
       {
           MetaFields.Title,
           itemType == ItemType.Listing ? Path.GetFileName(itemPath) : Path.GetFileNameWithoutExtension(itemPath)

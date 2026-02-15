@@ -8,5 +8,5 @@ using YetAnotherBlogGenerator.Items;
 namespace YetAnotherBlogGenerator.Grouping;
 
 internal interface IGroupEngine {
-  IGroup[] GenerateGroups(Item[] items);
+  IEnumerable<IGroup> GenerateGroups(Item[] items);
 }
