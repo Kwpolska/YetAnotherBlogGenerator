@@ -1,4 +1,8 @@
-﻿using System.Runtime.CompilerServices;
+﻿// YetAnotherBlogGenerator
+// Copyright © 2025-2026, Chris Warrick. All rights reserved.
+// Licensed under the 3-clause BSD license.
+
+using System.Runtime.CompilerServices;
 using System.Web;
 using System.Xml.XPath;
 using HtmlAgilityPack;
