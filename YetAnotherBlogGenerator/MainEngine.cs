@@ -12,7 +12,6 @@ using YetAnotherBlogGenerator.Output;
 using YetAnotherBlogGenerator.Scanning;
 using YetAnotherBlogGenerator.StaticFiles;
 using YetAnotherBlogGenerator.TemplateRendering;
-using YetAnotherBlogGenerator.Utilities;
 using YetAnotherBlogGenerator.XmlGenerators;
 
 namespace YetAnotherBlogGenerator;
@@ -30,21 +29,23 @@ internal class MainEngine(
     IRssGenerator rssGenerator,
     ISitemapGenerator sitemapGenerator,
     IStaticFileEngine staticFileEngine,
-    IThumbnailEngine thumbnailEngine,
-    StartTimeProvider startTimeProvider) {
+    TimeProvider timeProvider,
+    IThumbnailEngine thumbnailEngine) {
   private readonly Stopwatch _actionStopwatch = new();
   private IDisposable? _actionScope;
 
   public async Task Run() {
     await Task.Yield();
+    var startTime = timeProvider.GetUtcNow();
     logger.LogInformation(Constants.CoreLog, "Starting build");
+
     try {
       await RunCore().ConfigureAwait(false);
       cacheService.Set(Constants.CoreCacheSource, nameof(LastRenderStatus),
-          new LastRenderStatus(startTimeProvider.StartTime, true));
+          new LastRenderStatus(startTime, true));
     } catch {
       cacheService.Set(Constants.CoreCacheSource, nameof(LastRenderStatus),
-          new LastRenderStatus(startTimeProvider.StartTime, false));
+          new LastRenderStatus(startTime, false));
       throw;
     }
   }
@@ -83,13 +84,13 @@ internal class MainEngine(
     FinishAction("Generated", thumbnailTasks.Length, "thumbnails");
 
     var htmlGroups = new List<IHtmlGroup>(groups.Length);
-    var rssGroups = new List<ItemRssGroup>(groups.Length);
+    var rssFeeds = new List<RssFeed>(groups.Length);
     NavigationGroup? foundNavigationGroup = null;
 
     foreach (var group in groups) {
       switch (group) {
-        case ItemRssGroup rg:
-          rssGroups.Add(rg);
+        case RssFeed rg:
+          rssFeeds.Add(rg);
           break;
         case IHtmlGroup hg:
           htmlGroups.Add(hg);
@@ -117,9 +118,9 @@ internal class MainEngine(
     FinishAction("Rendered", htmlGroups.Count, "groups");
 
     StartAction("rss", "Rendering RSS feeds");
-    var rssTasks = rssGroups.Select(rssGenerator.GenerateRss).ToArray();
+    var rssTasks = rssFeeds.Select(rssGenerator.GenerateRss).ToArray();
     await outputEngine.ExecuteMany(rssTasks).ConfigureAwait(false);
-    FinishAction("Rendered", rssGroups.Count, "feeds");
+    FinishAction("Rendered", rssFeeds.Count, "feeds");
 
     StartAction("sitemap", "Rendering sitemap");
     var sitemapTask = sitemapGenerator.GenerateSitemap(items, htmlGroups);

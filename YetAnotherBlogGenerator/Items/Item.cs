@@ -14,7 +14,6 @@ public record Item(
     string[] SourcePathElements,
     string Url,
     ItemMeta Meta,
-    string Source,
     string Content,
     string Teaser,
     IRichItemData? RichItemData

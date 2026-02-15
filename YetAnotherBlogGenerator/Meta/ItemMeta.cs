@@ -20,6 +20,6 @@ public record ItemMeta(
     bool PublishedDateInSource,
     bool Legacy,
     string? HtmlTitle,
-    Dictionary<string, object> CustomFields) {
+    IReadOnlyDictionary<string, object> CustomFields) {
   public DateTimeOffset UpdatedOrPublished => Updated ?? Published;
 }

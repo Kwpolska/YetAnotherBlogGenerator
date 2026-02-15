@@ -16,26 +16,26 @@ internal class RssGenerator(IConfiguration configuration, IUrlHelper urlHelper)
   private readonly Dictionary<string, string> _teaserCache = new();
   private readonly Dictionary<string, string> _contentCache = new();
 
-  public WriteXmlTask GenerateRss(ItemRssGroup group) {
+  public WriteXmlTask GenerateRss(RssFeed feed) {
     XNamespace atom = "http://www.w3.org/2005/Atom";
     XNamespace content = "http://purl.org/rss/1.0/modules/content/";
     XNamespace dc = "http://purl.org/dc/elements/1.1/";
 
     var atomLink = new XElement(atom + "link");
-    atomLink.SetAttributeValue("href", AbsoluteUrl(group.Url));
+    atomLink.SetAttributeValue("href", AbsoluteUrl(feed.Url));
     atomLink.SetAttributeValue("rel", "self");
     atomLink.SetAttributeValue("type", "application/rss+xml");
 
     var channel = new XElement("channel",
-        new XElement("title", group.Title),
+        new XElement("title", feed.Title),
         new XElement("link", configuration.SiteUri),
         atomLink,
         new XElement("description", configuration.SiteDescription),
-        new XElement("lastBuildDate", FormatDate(group.Items.Max(i => i.Updated ?? i.Published))),
+        new XElement("lastBuildDate", FormatDate(feed.Items.Max(i => i.Updated ?? i.Published))),
         new XElement("generator", "https://github.com/Kwpolska/YetAnotherBlogGenerator")
     );
 
-    foreach (var item in group.Items) {
+    foreach (var item in feed.Items) {
       var rssItem = new XElement("item",
           new XElement("title", item.Title),
           new XElement(dc + "creator", configuration.SiteAuthor),
@@ -67,7 +67,7 @@ internal class RssGenerator(IConfiguration configuration, IUrlHelper urlHelper)
     );
 
     var document = new XDocument(root);
-    return new WriteXmlTask(document, urlHelper.UrlToOutputPath(group.Url));
+    return new WriteXmlTask(document, urlHelper.UrlToOutputPath(feed.Url));
   }
 
   private string AbsoluteUrl(string url) {

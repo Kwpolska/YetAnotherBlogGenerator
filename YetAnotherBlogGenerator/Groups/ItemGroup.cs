@@ -6,7 +6,7 @@ using YetAnotherBlogGenerator.Items;
 
 namespace YetAnotherBlogGenerator.Groups;
 
-public record ItemHtmlGroup(
+public record ItemGroup(
     Item[] Items,
     string Title,
     string Url,

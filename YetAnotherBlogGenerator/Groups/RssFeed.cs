@@ -6,7 +6,7 @@ using YetAnotherBlogGenerator.Items;
 
 namespace YetAnotherBlogGenerator.Groups;
 
-internal record ItemRssGroup(
+internal record RssFeed(
     Item[] Items,
     string Title,
     string Url,

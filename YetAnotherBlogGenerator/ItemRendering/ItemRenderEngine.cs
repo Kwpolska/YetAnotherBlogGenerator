@@ -79,7 +79,6 @@ internal class ItemRenderEngine(IConfiguration configuration, IServiceProvider s
               SourcePathElements: sourceItem.SourcePathElements,
               Url: urlBuilder.ToString(),
               Meta: sourceItem.Meta,
-              Source: sourceItem.Source,
               Content: content,
               Teaser: teaser,
               RichItemData: richItemData

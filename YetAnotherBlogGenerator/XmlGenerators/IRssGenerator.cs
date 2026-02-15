@@ -8,5 +8,5 @@ using YetAnotherBlogGenerator.Output;
 namespace YetAnotherBlogGenerator.XmlGenerators;
 
 internal interface IRssGenerator {
-  WriteXmlTask GenerateRss(ItemRssGroup group);
+  WriteXmlTask GenerateRss(RssFeed feed);
 }

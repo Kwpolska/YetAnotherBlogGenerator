@@ -10,22 +10,19 @@ using YetAnotherBlogGenerator.Utilities;
 namespace YetAnotherBlogGenerator.Grouping;
 
 internal class GroupFormatter(IConfiguration configuration) : IGroupFormatter {
-  public ItemHtmlGroup FormatHtmlListGroup(IEnumerable<Item> items, string title, string url, string template,
+  public ItemGroup FormatHtmlListGroup(IEnumerable<Item> items, string title, string url, string template,
       string? key = null)
     => FormatHtmlListGroup(items.ToArray(), title: title, url: url, template: template, key: key);
 
-  public ItemHtmlGroup FormatHtmlListGroup(Item[] items, string title, string url, string template,
+  public ItemGroup FormatHtmlListGroup(Item[] items, string title, string url, string template,
       string? key = null)
     => new(Items: items, Title: title, Url: url, TemplateName: template,
         Key: key);
 
-  public ItemRssGroup FormatRssGroup(IEnumerable<Item> items, string title, string url, string? key = null)
-    => FormatRssGroup(items: items.ToArray(), title: title, url: url, key: key);
+  public RssFeed FormatRssFeed(IEnumerable<Item> items, string title, string url, string? key = null)
+    => new(Items: items.ToArray(), Title: title, Url: url, Key: key);
 
-  public ItemRssGroup FormatRssGroup(Item[] items, string title, string url, string? key = null)
-    => new(Items: items, Title: title, Url: url, Key: key);
-
-  public IEnumerable<ItemHtmlGroup> FormatHtmlIndexGroups(
+  public IEnumerable<ItemGroup> FormatHtmlIndexGroups(
       IEnumerable<Item> items,
       string title,
       string outputFolderPath,
@@ -50,7 +47,7 @@ internal class GroupFormatter(IConfiguration configuration) : IGroupFormatter {
       };
       var nextGroupUrl = groupNumber == (groupCount - 1) ? null : $"{outputFolderPath}/index-{groupNumber + 1}.html";
 
-      yield return new ItemHtmlGroup(
+      yield return new ItemGroup(
           Items: itemsInGroup,
           Title: groupTitle,
           Url: thisGroupOutputUrl,

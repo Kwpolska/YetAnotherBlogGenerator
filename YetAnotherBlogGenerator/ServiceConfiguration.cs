@@ -20,6 +20,13 @@ namespace YetAnotherBlogGenerator;
 
 internal static class ServiceConfiguration {
   public static IServiceCollection AddYabgServices(this IServiceCollection services) => services
+      // General
+      .AddScoped<ICacheService, CacheService>()
+      .AddScoped<IConfigurationReader, ConfigurationReader>()
+      .AddScoped<IConfiguration>(s => s.GetRequiredService<IConfigurationReader>().Read())
+      .AddScoped<IUrlHelper, UrlHelper>()
+      .AddScoped<MainEngine>()
+      .AddSingleton(TimeProvider.System)
       // Grouping
       .AddScoped<IGroupEngine, GroupEngine>()
       .AddScoped<IGroupFormatter, GroupFormatter>()
@@ -31,13 +38,6 @@ internal static class ServiceConfiguration {
       .AddScoped<IItemGrouper, GalleryIndexGrouper>()
       .AddScoped<IItemGrouper, ListingIndexGrouper>()
       .AddScoped<IItemGrouper, ProjectGrouper>()
-      // Meta
-      .AddScoped<IMetaExtractor, YamlMetaExtractor>()
-      .AddScoped<IMetaExtractor, FileSystemMetaExtractor>()
-      .AddScoped<IMetaParser, MetaParser>()
-      // Listings
-      .AddScoped<PygmentsRenderer>()
-      .AddScoped<IListingRenderer, CachingPygmentsRenderer>()
       // Item Rendering
       .AddKeyedScoped<IItemRenderer, GalleryItemRenderer>(GalleryItemRenderer.Name)
       .AddKeyedScoped<IItemRenderer, HtmlItemRenderer>(HtmlItemRenderer.Name)
@@ -45,6 +45,13 @@ internal static class ServiceConfiguration {
       .AddKeyedScoped<IItemRenderer, MarkdownItemRenderer>(MarkdownItemRenderer.Name)
       .AddScoped<IItemRenderEngine, ItemRenderEngine>()
       .AddScoped<IRenderDispatcher, RenderDispatcher>()
+      // Listings
+      .AddScoped<PygmentsRenderer>()
+      .AddScoped<IListingRenderer, CachingPygmentsRenderer>()
+      // Meta
+      .AddScoped<IMetaExtractor, YamlMetaExtractor>()
+      .AddScoped<IMetaExtractor, FileSystemMetaExtractor>()
+      .AddScoped<IMetaParser, MetaParser>()
       // Output
       .AddScoped<IOutputEngine, OutputEngine>()
       // Scanning
@@ -58,13 +65,5 @@ internal static class ServiceConfiguration {
       .AddScoped<ITemplateEngine, TemplateEngine>()
       // XML
       .AddScoped<IRssGenerator, RssGenerator>()
-      .AddScoped<ISitemapGenerator, SitemapGenerator>()
-      // General
-      .AddScoped<ICacheService, CacheService>()
-      .AddScoped<IConfigurationReader, ConfigurationReader>()
-      .AddScoped<IConfiguration>(s => s.GetRequiredService<IConfigurationReader>().Read())
-      .AddScoped<IUrlHelper, UrlHelper>()
-      .AddScoped<MainEngine>()
-      .AddScoped<StartTimeProvider>()
-      .AddSingleton(TimeProvider.System);
+      .AddScoped<ISitemapGenerator, SitemapGenerator>();
 }

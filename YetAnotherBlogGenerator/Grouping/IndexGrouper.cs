@@ -16,11 +16,11 @@ internal class IndexGrouper(IConfiguration configuration, IGroupFormatter groupF
         url: "/",
         template: CommonTemplates.Index);
 
-    var rssGroups = groupFormatter.FormatRssGroup(
+    var rssFeeds = groupFormatter.FormatRssFeed(
         items: posts.Take(configuration.FeedSize),
         title: configuration.SiteTitle,
         url: "/rss.xml");
 
-    return htmlGroups.Cast<IGroup>().Append(rssGroups);
+    return htmlGroups.Cast<IGroup>().Append(rssFeeds);
   }
 }

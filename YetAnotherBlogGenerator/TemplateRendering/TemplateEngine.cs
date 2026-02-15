@@ -40,7 +40,7 @@ internal class TemplateEngine : ITemplateEngine {
     options.TemplateOptions.MemberAccessStrategy.Register<GuideMeta>();
     options.TemplateOptions.MemberAccessStrategy.Register<Item>();
     options.TemplateOptions.MemberAccessStrategy.Register<ItemGroupModel>();
-    options.TemplateOptions.MemberAccessStrategy.Register<ItemHtmlGroup>();
+    options.TemplateOptions.MemberAccessStrategy.Register<ItemGroup>();
     options.TemplateOptions.MemberAccessStrategy.Register<ItemMeta>();
     options.TemplateOptions.MemberAccessStrategy.Register<ItemModel>();
     options.TemplateOptions.MemberAccessStrategy.Register<Link>();
@@ -124,7 +124,7 @@ internal class TemplateEngine : ITemplateEngine {
 
   public async Task RenderGroup(IHtmlGroup group, TextWriter outputStream) {
     object model = group switch {
-        ItemHtmlGroup itemHtmlGroup => new ItemGroupModel(itemHtmlGroup, _configuration),
+        ItemGroup itemHtmlGroup => new ItemGroupModel(itemHtmlGroup, _configuration),
         LinkGroup linkGroup => new LinkGroupModel(linkGroup, _configuration),
         DirectoryTreeGroup directoryTreeGroup => new DirectoryTreeGroupModel(directoryTreeGroup, _configuration),
         _ => throw new ArgumentOutOfRangeException(nameof(group))

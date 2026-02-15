@@ -12,9 +12,6 @@ using YetAnotherBlogGenerator.Utilities;
 namespace YetAnotherBlogGenerator.XmlGenerators;
 
 internal class SitemapGenerator(IConfiguration configuration, IUrlHelper urlHelper) : ISitemapGenerator {
-  // <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-// xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
-// xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   public WriteXmlTask GenerateSitemap(IReadOnlyCollection<Item> items, IReadOnlyCollection<IHtmlGroup> htmlGroups) {
     var sitemapItems = new List<SitemapItem>(items.Count + htmlGroups.Count);
 

@@ -47,8 +47,8 @@ internal class TagCategoryGrouper(IConfiguration configuration, IGroupFormatter 
             key: g.Key.Slug,
             rssUrl: g.Key.RssUrl));
 
-    var rssGroups = postsByAnything
-        .Select(g => groupFormatter.FormatRssGroup(
+    var rssFeeds = postsByAnything
+        .Select(g => groupFormatter.FormatRssFeed(
             items: g.Take(configuration.FeedSize),
             title: $"Posts about {g.Key.Name}",
             url: g.Key.RssUrl,
@@ -66,7 +66,7 @@ internal class TagCategoryGrouper(IConfiguration configuration, IGroupFormatter 
         Title: "Tags and Categories",
         LastUpdated: posts.Max(p => p.Published));
 
-    return htmlGroups.Cast<IGroup>().Concat(rssGroups).Append(linkGroup);
+    return htmlGroups.Cast<IGroup>().Concat(rssFeeds).Append(linkGroup);
   }
 
   private record struct TagKey(string Name, string Slug, bool IsCategory) {
