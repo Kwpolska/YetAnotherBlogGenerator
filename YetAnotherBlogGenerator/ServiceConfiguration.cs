@@ -25,8 +25,7 @@ internal static class ServiceConfiguration {
       .AddScoped<IConfigurationReader, ConfigurationReader>()
       .AddScoped<IConfiguration>(s => s.GetRequiredService<IConfigurationReader>().Read())
       .AddScoped<IUrlHelper, UrlHelper>()
-      .AddScoped<MainEngine>()
-      .AddSingleton(TimeProvider.System)
+      .AddScoped<IMainEngine, MainEngine>()
       // Grouping
       .AddScoped<IGroupEngine, GroupEngine>()
       .AddScoped<IGroupFormatter, GroupFormatter>()

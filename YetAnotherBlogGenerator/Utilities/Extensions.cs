@@ -8,8 +8,8 @@ using System.Text.RegularExpressions;
 namespace YetAnotherBlogGenerator.Utilities;
 
 internal static partial class Extensions {
-  private static readonly Regex _slugifyInvalidCharacterRegex = SlugifyInvalidCharacterRegex();
-  private static readonly Regex _slugifySpaceCharacterRegex = SlugifySpaceCharacterRegex();
+  private static readonly Regex SlugifyInvalidCharacterRegex = SlugifyInvalidCharacterRegexSource();
+  private static readonly Regex SlugifySpaceCharacterRegex = SlugifySpaceCharacterRegexSource();
 
   public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> enumerable) where T : notnull
     => enumerable.Where(x => x != null).Cast<T>();
@@ -32,8 +32,8 @@ internal static partial class Extensions {
     value = new string(value.Normalize(NormalizationForm.FormKD).Where(c => c <= 0x7f).ToArray())
         .ToLowerInvariant();
 
-    value = _slugifyInvalidCharacterRegex.Replace(value, "");
-    return _slugifySpaceCharacterRegex.Replace(value, "-").Trim('-', '_');
+    value = SlugifyInvalidCharacterRegex.Replace(value, "");
+    return SlugifySpaceCharacterRegex.Replace(value, "-").Trim('-', '_');
   }
 
   private static readonly Encoding Utf8NoBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
@@ -44,8 +44,8 @@ internal static partial class Extensions {
   }
 
   [GeneratedRegex(@"[^\w\s-]")]
-  private static partial Regex SlugifyInvalidCharacterRegex();
+  private static partial Regex SlugifyInvalidCharacterRegexSource();
 
   [GeneratedRegex(@"[-\s]+")]
-  private static partial Regex SlugifySpaceCharacterRegex();
+  private static partial Regex SlugifySpaceCharacterRegexSource();
 }

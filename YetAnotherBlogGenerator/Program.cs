@@ -26,6 +26,7 @@ internal class Program {
 
     var services = new ServiceCollection()
         .AddYabgServices()
+        .AddSingleton(TimeProvider.System)
         .AddSingleton<ISourceRootProvider>(new SourceRootProvider(sourceRoot))
         .AddLogging(loggingBuilder =>
             loggingBuilder
@@ -132,7 +133,7 @@ internal class Program {
     var scope = services.CreateAsyncScope();
     await using var _ = scope.ConfigureAwait(false);
     try {
-      var mainEngine = scope.ServiceProvider.GetRequiredService<MainEngine>();
+      var mainEngine = scope.ServiceProvider.GetRequiredService<IMainEngine>();
       await mainEngine.Run().ConfigureAwait(false);
       return 0;
     } catch (Exception exc) {

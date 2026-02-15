@@ -11,8 +11,8 @@ internal static partial class Constants {
   public static readonly Regex TeaserRegex = TeaserRegexSource();
 
   public const string CacheFileName = ".yabg-cache.sqlite3";
-  public static string SiteConfigFileName => "yabg-site.yml";
-  public static string LocalConfigFileName => "yabg-local.yml";
+  public const string SiteConfigFileName = "yabg-site.yml";
+  public const string LocalConfigFileName = "yabg-local.yml";
   public const char UrlPathSeparator = '/';
   public const string IndexHtml = "index.html";
   public const string CoreCacheSource = "Core";

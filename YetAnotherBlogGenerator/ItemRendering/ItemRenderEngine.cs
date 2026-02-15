@@ -17,14 +17,12 @@ internal class ItemRenderEngine(IConfiguration configuration, IServiceProvider s
         .GroupBy(i => i.ScanPattern.RendererName)
         .Select(group => {
           var renderer = _keyedServiceProvider.GetRequiredKeyedService<IItemRenderer>(group.Key);
-          switch (renderer) {
-            case IBulkItemRenderer bulkRenderer:
-              return bulkRenderer.RenderFullHtml(group);
-            case ISingleItemRenderer singleRenderer:
-              return Task.WhenAll(group.Select(item => RenderWithSingleRenderer(singleRenderer, item)));
-            default:
-              throw new InvalidOperationException("Unexpected renderer type");
-          }
+          return renderer switch {
+              IBulkItemRenderer bulkRenderer => bulkRenderer.RenderFullHtml(group),
+              ISingleItemRenderer singleRenderer => Task.WhenAll(
+                  group.Select(item => RenderWithSingleRenderer(singleRenderer, item))),
+              _ => throw new InvalidOperationException("Unexpected renderer type")
+          };
         });
 
     return (await Task.WhenAll(renderTasks).ConfigureAwait(false))

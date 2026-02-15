@@ -30,7 +30,7 @@ internal class MainEngine(
     ISitemapGenerator sitemapGenerator,
     IStaticFileEngine staticFileEngine,
     TimeProvider timeProvider,
-    IThumbnailEngine thumbnailEngine) {
+    IThumbnailEngine thumbnailEngine) : IMainEngine {
   private readonly Stopwatch _actionStopwatch = new();
   private IDisposable? _actionScope;
 

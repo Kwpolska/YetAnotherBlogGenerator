@@ -9,9 +9,9 @@ using YetAnotherBlogGenerator.Items;
 
 namespace YetAnotherBlogGenerator.Meta;
 
-internal class YamlMetaExtractor : IMetaExtractor {
-  private static Regex _separatorRegex = new Regex(@"^---$", RegexOptions.Multiline);
-  private IDeserializer _deserializer = new DeserializerBuilder().Build();
+internal partial class YamlMetaExtractor : IMetaExtractor {
+  private static readonly Regex SeparatorRegex = SeparatorRegexSource();
+  private readonly IDeserializer _deserializer = new DeserializerBuilder().Build();
   private readonly ILogger<YamlMetaExtractor> _logger;
 
   public YamlMetaExtractor(ILogger<YamlMetaExtractor> logger) {
@@ -24,12 +24,12 @@ internal class YamlMetaExtractor : IMetaExtractor {
   public bool SupportsItemType(ItemType itemType) => itemType != ItemType.Listing;
 
   public string ExtractContentSource(string itemFullSource, string itemPath) {
-    var items = _separatorRegex.Split(itemFullSource, 3);
+    var items = SeparatorRegex.Split(itemFullSource, 3);
     return items.Last();
   }
 
   public Dictionary<string, object>? ExtractMeta(string itemFullSource, string itemPath, ItemType itemType) {
-    var items = _separatorRegex.Split(itemFullSource, 3);
+    var items = SeparatorRegex.Split(itemFullSource, 3);
     var yaml = items.Skip(1).FirstOrDefault();
     if (yaml == null) {
       _logger.LogDebug("YAML metadata not found in {Path}", itemPath);
@@ -38,4 +38,7 @@ internal class YamlMetaExtractor : IMetaExtractor {
 
     return _deserializer.Deserialize<Dictionary<string, object>>(yaml);
   }
+
+  [GeneratedRegex(@"^---$", RegexOptions.Multiline)]
+  private static partial Regex SeparatorRegexSource();
 }

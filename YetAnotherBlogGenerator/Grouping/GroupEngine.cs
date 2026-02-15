@@ -14,11 +14,13 @@ internal class GroupEngine(IEnumerable<IItemGrouper> itemGroupers, IEnumerable<I
         .OrderByDescending(i => i.Published)
         .ThenBy(i => i.SourcePath)
         .ToArray();
-    var posts = sortedItems
+
+    var sortedPosts = sortedItems
         .Where(item => item.Type == ItemType.Post)
         .ToArray();
+
     var itemGroups = itemGroupers.SelectMany(g => g.GroupItems(sortedItems));
-    var postGroups = postGroupers.SelectMany(g => g.GroupPosts(posts));
+    var postGroups = postGroupers.SelectMany(g => g.GroupPosts(sortedPosts));
     return itemGroups.Concat(postGroups).ToArray();
   }
 }
