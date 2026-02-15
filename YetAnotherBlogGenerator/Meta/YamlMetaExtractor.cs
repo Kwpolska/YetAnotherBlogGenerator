@@ -9,14 +9,9 @@ using YetAnotherBlogGenerator.Items;
 
 namespace YetAnotherBlogGenerator.Meta;
 
-internal partial class YamlMetaExtractor : IMetaExtractor {
+internal partial class YamlMetaExtractor(ILogger<YamlMetaExtractor> logger) : IMetaExtractor {
   private static readonly Regex SeparatorRegex = SeparatorRegexSource();
   private readonly IDeserializer _deserializer = new DeserializerBuilder().Build();
-  private readonly ILogger<YamlMetaExtractor> _logger;
-
-  public YamlMetaExtractor(ILogger<YamlMetaExtractor> logger) {
-    _logger = logger;
-  }
 
   public int Priority => 0;
   public string Name => "YAML";
@@ -32,7 +27,7 @@ internal partial class YamlMetaExtractor : IMetaExtractor {
     var items = SeparatorRegex.Split(itemFullSource, 3);
     var yaml = items.Skip(1).FirstOrDefault();
     if (yaml == null) {
-      _logger.LogDebug("YAML metadata not found in {Path}", itemPath);
+      logger.LogDebug("YAML metadata not found in {Path}", itemPath);
       return null;
     }
 

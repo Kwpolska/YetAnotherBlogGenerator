@@ -4,20 +4,13 @@
 
 namespace YetAnotherBlogGenerator.Groups;
 
-public abstract class DirectoryTreeEntry {
-  public bool IsItem { get; }
-  public string[] Path { get; }
-  public string JoinedPath { get; }
-  public string LastPart { get; }
+public abstract class DirectoryTreeEntry(string[] path, bool isItem) {
+  public bool IsItem { get; } = isItem;
+  public string[] Path { get; } = path;
+  public string JoinedPath { get; } = string.Join('/', path);
+  public string LastPart { get; } = path.Length == 0 ? "" : path[^1];
 
   public abstract string Url { get; }
-
-  protected DirectoryTreeEntry(string[] path, bool isItem) {
-    Path = path;
-    JoinedPath = string.Join('/', path);
-    IsItem = isItem;
-    LastPart = path.Length == 0 ? "" : path[^1];
-  }
 
   protected bool Equals(DirectoryTreeEntry other) {
     return JoinedPath == other.JoinedPath;

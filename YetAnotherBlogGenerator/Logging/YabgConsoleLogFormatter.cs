@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging.Console;
 
 namespace YetAnotherBlogGenerator.Logging;
 
-internal sealed class YabgConsoleLogFormatter : ConsoleFormatter {
+internal sealed class YabgConsoleLogFormatter() : ConsoleFormatter(nameof(YabgConsoleLogFormatter)) {
   private static readonly string MultiLinePadding = new string(' ', 4);
   private static readonly string NewLineWithMessagePadding = Environment.NewLine + MultiLinePadding;
 
@@ -20,9 +20,6 @@ internal sealed class YabgConsoleLogFormatter : ConsoleFormatter {
   private const int MaxScopeLength = 13; // [html groups]
 
   private const string TimestampFormat = "HH:mm:ss ";
-
-  public YabgConsoleLogFormatter() : base(nameof(YabgConsoleLogFormatter)) {
-  }
 
   public override void Write<TState>(in LogEntry<TState> logEntry, IExternalScopeProvider? scopeProvider,
       TextWriter textWriter) {
@@ -130,14 +127,9 @@ internal sealed class YabgConsoleLogFormatter : ConsoleFormatter {
     textWriter.Write(new string(' ', Math.Max(1, MaxScopeLength - scopeInfo.Length + 1)));
   }
 
-  private readonly struct ConsoleColors {
-    public ConsoleColors(ConsoleColor? foreground, ConsoleColor? background) {
-      Foreground = foreground;
-      Background = background;
-    }
+  private readonly struct ConsoleColors(ConsoleColor? foreground, ConsoleColor? background) {
+    public ConsoleColor? Foreground { get; } = foreground;
 
-    public ConsoleColor? Foreground { get; }
-
-    public ConsoleColor? Background { get; }
+    public ConsoleColor? Background { get; } = background;
   }
 }
