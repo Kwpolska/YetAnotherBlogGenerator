@@ -7,7 +7,7 @@ using Markdig.Renderers;
 using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using YetAnotherBlogGenerator.ItemRendering.External;
-using YetAnotherBlogGenerator.ItemRendering.MarkdigPygments;
+using YetAnotherBlogGenerator.ItemRendering.MarkdigExtras;
 using YetAnotherBlogGenerator.Items;
 using YetAnotherBlogGenerator.Utilities;
 
@@ -19,6 +19,8 @@ internal class MarkdownItemRenderer(
   public const string Name = RendererNames.Markdown;
 
   private readonly MarkdownPipeline _markdownPipeline = new MarkdownPipelineBuilder()
+      .ConfigureNewLine("\n")
+      .Use<WrappingHtmlTableRendererExtension>()
       .UseAdvancedExtensions()
       .Use(new PygmentsMarkdownExtension(listingRenderer))
       .Build();

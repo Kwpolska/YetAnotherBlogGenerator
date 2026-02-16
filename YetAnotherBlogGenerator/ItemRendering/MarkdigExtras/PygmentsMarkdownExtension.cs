@@ -10,7 +10,7 @@ using Markdig.Renderers;
 using Markdig.Renderers.Html;
 using YetAnotherBlogGenerator.ItemRendering.External;
 
-namespace YetAnotherBlogGenerator.ItemRendering.MarkdigPygments;
+namespace YetAnotherBlogGenerator.ItemRendering.MarkdigExtras;
 
 internal class PygmentsMarkdownExtension(IListingRenderer listingRenderer) : IMarkdownExtension {
   public void Setup(MarkdownPipelineBuilder pipeline) {

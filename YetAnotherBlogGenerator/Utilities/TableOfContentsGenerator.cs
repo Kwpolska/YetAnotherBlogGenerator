@@ -4,7 +4,6 @@
 
 using System.Runtime.CompilerServices;
 using System.Web;
-using System.Xml.XPath;
 using HtmlAgilityPack;
 using YetAnotherBlogGenerator.Items;
 

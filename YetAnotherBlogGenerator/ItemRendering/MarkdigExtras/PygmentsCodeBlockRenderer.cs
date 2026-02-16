@@ -7,7 +7,7 @@ using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using YetAnotherBlogGenerator.ItemRendering.External;
 
-namespace YetAnotherBlogGenerator.ItemRendering.MarkdigPygments;
+namespace YetAnotherBlogGenerator.ItemRendering.MarkdigExtras;
 
 internal class PygmentsCodeBlockRenderer(IListingRenderer listingRenderer) : HtmlObjectRenderer<CodeBlock> {
   protected override void Write(HtmlRenderer renderer, CodeBlock obj) {
