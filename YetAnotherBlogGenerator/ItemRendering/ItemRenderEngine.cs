@@ -10,7 +10,10 @@ using YetAnotherBlogGenerator.Utilities;
 
 namespace YetAnotherBlogGenerator.ItemRendering;
 
-internal class ItemRenderEngine(IConfiguration configuration, IServiceProvider serviceProvider, ITableOfContentsGenerator tableOfContentsGenerator) : IItemRenderEngine {
+internal class ItemRenderEngine(
+    IConfiguration configuration,
+    IServiceProvider serviceProvider,
+    ITableOfContentsGenerator tableOfContentsGenerator) : IItemRenderEngine {
   private readonly IKeyedServiceProvider _keyedServiceProvider = (IKeyedServiceProvider)serviceProvider;
 
   public async Task<IEnumerable<Item>> Render(IEnumerable<SourceItem> sourceItems) {
@@ -47,7 +50,8 @@ internal class ItemRenderEngine(IConfiguration configuration, IServiceProvider s
           IReadOnlyCollection<TableOfContentsItem> tableOfContents = [];
 
           if (sourceItem.ScanPattern.SupportsTablesOfContents) {
-            tableOfContents = result.TableOfContents ?? tableOfContentsGenerator.ExtractTableOfContents(html, sourceItem.Meta.Legacy);
+            tableOfContents = result.TableOfContents ??
+                              tableOfContentsGenerator.ExtractTableOfContents(html, sourceItem.Meta.Legacy);
           }
 
           var urlBuilder = new StringBuilder(sourceItem.SourcePath.Length - configuration.SourceRoot.Length);
@@ -64,17 +68,24 @@ internal class ItemRenderEngine(IConfiguration configuration, IServiceProvider s
 
           urlBuilder.Append('/');
 
-          urlBuilder.Append(Path.GetFileNameWithoutExtension(sourcePathElementsSpan[^1]));
+          var lastPathSegment = sourcePathElementsSpan[^1];
+          var lastPathSegmentWithoutExtension = Path.GetFileNameWithoutExtension(lastPathSegment);
 
-          if (sourceItem.ScanPattern.UsePrettyUrls) {
-            urlBuilder.Append('/');
+          if (lastPathSegmentWithoutExtension == "index" && sourceItem.ScanPattern.UsePrettyUrls) {
+            // do nothing
           } else {
-            if (sourceItem.ScanPattern.ItemType == ItemType.Listing) {
-              var ext = Path.GetExtension(sourcePathElementsSpan[^1]);
-              urlBuilder.Append(ext);
-            }
+            urlBuilder.Append(lastPathSegmentWithoutExtension);
 
-            urlBuilder.Append(".html");
+            if (sourceItem.ScanPattern.UsePrettyUrls) {
+              urlBuilder.Append('/');
+            } else {
+              if (sourceItem.ScanPattern.ItemType == ItemType.Listing) {
+                var ext = Path.GetExtension(lastPathSegment);
+                urlBuilder.Append(ext);
+              }
+
+              urlBuilder.Append(".html");
+            }
           }
 
           return new Item(
