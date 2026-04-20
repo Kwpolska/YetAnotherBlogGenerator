@@ -103,8 +103,8 @@ internal class TemplateEngine : ITemplateEngine {
 
     var value = input.ToStringValue();
     var result = (arguments.At(0).ToStringValue()) switch {
-        "tag" => $"/blog/tags/{value.Slugify(model?.CategoryTagSlugs)}",
-        "category" => $"/blog/tags/cat_{value.Slugify(model?.CategoryTagSlugs)}",
+        "tag" => $"/blog/tags/{value.Slugify(model?.CategoryTagSlugs)}/",
+        "category" => $"/blog/tags/cat_{value.Slugify(model?.CategoryTagSlugs)}/",
         var unknown => throw new Exception($"Unknown link type {unknown}")
     };
     return new StringValue(result);
